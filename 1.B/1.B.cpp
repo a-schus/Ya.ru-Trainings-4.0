@@ -1,38 +1,43 @@
 ﻿#include <iostream>
-#include <vector>
 
 
+int partition(long long *vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
 
-int partition(std::vector<long long>& vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
+void quickSort(long long* vec, int left, int right, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
 
-void quickSort(std::vector<long long>& vec, int left, int right, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
 
 
 int main()
 {
 	int n;
 	std::cin >> n;
-	std::vector<long long> vec(n);
+	long long* vec = new long long[n];
 	for (int i = 0; i < n; ++i) {
 		std::cin >> vec[i];
 	}
 
-	quickSort(vec, 0, vec.size() - 1/*, [](long long a, long long b) { return a < b; }*/);
+	bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; };
+
+	quickSort(vec, 0, n - 1, predicate);
 
 	for (int i = 0; i < n; ++i) {
 		std::cout << vec[i] << ' ';
 	}
 	std::cout << '\n';
 
+	delete[] vec;
+
 }
 
 
-void quickSort(std::vector<long long>& vec, int left, int right, bool(*predicate)(long long a, long long b))
+void quickSort(long long* vec, int left, int right, bool(*predicate)(long long a, long long b))
 {
 	if (left >= right)
 		return;
 
-	long long pivot = vec[right / 2];
+	long long pivot = vec[left];
+	
+	//long long pivot = vec[(right - left) / 2 + left];
 
 	//if ((vec[left] < vec[right] && vec[left] > pivot) ||
 	//	(vec[left] > vec[right] && vec[left] < pivot)) {
@@ -43,7 +48,6 @@ void quickSort(std::vector<long long>& vec, int left, int right, bool(*predicate
 	//	pivot = vec[right];
 	//}
 
-	//bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; };
 
 	int p = partition(vec, left, right, pivot, predicate);
 
@@ -54,46 +58,20 @@ void quickSort(std::vector<long long>& vec, int left, int right, bool(*predicate
 }
 
 
-int partition(std::vector<long long>& vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
-	
-	if (left == right) {
-		if (vec[left] < pivot) {
-			return left + 1;
-		}
-		else {
-			return left;
-		}
-	}
+int partition( long long* vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
+	if (left == right)
+		return left + 1;
 
-	//loop forever
-	//	while A[i] < pivot
-	//		i : = i + 1
-	//		while A[j] > pivot
-	//			j : = j - 1
-	//			if i >= j then
-	//				return j
-	//				swap A[i++] with A[j--]
-	
-	while (true) {
-		while (vec[left] < pivot) 
-			++left;
-		while (vec[right] > pivot) 
-			--right;
-		if (left >= right)
-			return right;
-		std::swap(vec[left], vec[right]);
-	}
-
-	/*while (left <= right)
+	while (left <= right)
 	{
-		if (vec[left] >= pivot)
+		if (!predicate(vec[left], pivot))
 		{
-			if (pivot >= vec[right])
+			if (!predicate(pivot, vec[right]))
 			{
-				if (vec[left] != vec[right])
-				{
+				//if (vec[left] != vec[right])
+				//{
 					std::swap(vec[left], vec[right]);
-				}
+				//}
 				++left;
 				--right;
 			}
@@ -103,7 +81,7 @@ int partition(std::vector<long long>& vec, int left, int right, long long pivot,
 		{
 			++left;
 		}
-	}*/
+	}
 
 	return left;
 }
