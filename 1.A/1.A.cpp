@@ -2,7 +2,7 @@
 #include <vector>
 
 
-int partition(std::vector<long long> vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
+int partition(std::vector<long long>& vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
 
 
 int main()
@@ -23,7 +23,7 @@ int main()
 
 
 
-int partition(std::vector<long long> vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
+int partition(std::vector<long long>& vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
 	if (left > right) {
 		return left;
 	}
@@ -43,7 +43,7 @@ int partition(std::vector<long long> vec, int left, int right, long long pivot, 
 	{
 		if (!predicate(vec[i], pivot))
 		{
-			if (predicate(vec[j], pivot))
+			if (!predicate(pivot, vec[j]))
 			{
 				if (vec[i] != vec[j])
 				{
