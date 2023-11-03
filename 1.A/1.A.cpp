@@ -1,89 +1,88 @@
 ﻿#include <iostream>
 #include <vector>
 
+struct E_G {
+	long long e, g;
+};
 
-int partition(std::vector<long long>& vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
+E_G partition(long long* vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
 
 
 int main()
 {
 	int n;
 	std::cin >> n;
-	std::vector<long long> vec(n);
+	long long* vec = new long long[n];
 	for (int i = 0; i < n; ++i) {
 		std::cin >> vec[i];
 	}
 	long long pivot;
 	std::cin >> pivot;
 
-	int countLeft = partition(vec, 0, vec.size() - 1, pivot);
+	E_G countLeft = partition(vec, 0, n - 1, pivot);
 
-	std::cout << countLeft << '\n' << vec.size() - countLeft << '\n';
+	std::cout << countLeft.e << '\n' << n - countLeft.e << '\n';
+
+
+	delete[] vec;
 }
 
 
 
-int partition(std::vector<long long>& vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
+E_G partition(long long* vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
 	if (left > right) {
-		return left;
+		return { left, left + 1 };
 	}
-	else if (left == right) {
-		if (predicate(vec[left], pivot)) {
-			return left + 1;
+
+	long long e = left, g = left, n = left;
+
+	for (; n <= right; ++n) {
+		if (vec[n] > pivot) {
+			//++n;
+		}
+		else if (vec[n] == pivot) {
+			std::swap(vec[n], vec[g]);
+			++g;/* ++n;*/
 		}
 		else {
-			return left;
+			long long tmp = vec[e];
+			vec[e] = vec[n];
+			vec[n] = tmp;
+
+			++e; ++g;/* ++n;*/
 		}
 	}
 
-	int i = left;
-	int j = right;
 
-	while (i <= j)
-	{
-		if (!predicate(vec[i], pivot))
-		{
-			if (!predicate(pivot, vec[j]))
-			{
-				if (vec[i] != vec[j])
-				{
-					std::swap(vec[i], vec[j]);
-				}
-				++i;
-				--j;
-			}
-			else --j;
-		}
-		else
-		{
-			++i;
-		}
-	}
-
-	return i;
+	return { e, g };
 }
 
+	
+//int partition(long long* vec, int left, int right, long long pivot, bool (*predicate)(long long a, long long b)) {
+//		if (left > right) {
+//		return left;
+//	}
+//	else if (left == right) {
+//		if (predicate(vec[left], pivot)) {
+//			return left + 1;
+//		}
+//		else {
+//			return left;
+//		}
+//	}
 //
-//void fastSort(int arr[50], long long start, long long end)
-//{
-//
-//	srand(time(NULL));
-//	int pivot = arr[start + rand() % (end - start + 1)];
-//
-//	long long i = start;
-//	long long j = end;
+//	int i = left;
+//	int j = right;
 //
 //	while (i <= j)
 //	{
-//		if (arr[i] >= pivot)
+//		if (!predicate(vec[i], pivot))
 //		{
-//			if (arr[j] <= pivot)
+//			if (predicate(vec[j], pivot))
 //			{
-//				if (arr[i] != arr[j])
+//				if (vec[i] != vec[j])
 //				{
-//					int buf = arr[i];
-//					arr[i] = arr[j];
-//					arr[j] = buf;
+//					std::swap(vec[i], vec[j]);
 //				}
 //				++i;
 //				--j;
@@ -95,6 +94,6 @@ int partition(std::vector<long long>& vec, int left, int right, long long pivot,
 //			++i;
 //		}
 //	}
-//	fastSort(arr, start, j);
-//	fastSort(arr, i, end);
+//
+//	return i;
 //}
