@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 
-long long* merge(long long* a, int aSize, long long* b, int bSize, long long* c, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
+void merge(long long* a, int aSize, long long* b, int bSize, long long* c, bool (*predicate)(long long a, long long b) = [](long long a, long long b) { return a < b; });
 
 int main()
 {
@@ -32,16 +32,16 @@ int main()
 	return 0;
 }
 
-long long* merge(long long* a, int aSize, long long* b, int bSize, long long* c, bool (*predicate)(long long a, long long b))
+void merge(long long* a, int aSize, long long* b, int bSize, long long* c, bool (*predicate)(long long a, long long b))
 {
 	if (aSize + bSize == 0) {
-		return c;
+		return;
 	} if (aSize == 0) {
 		c[0] = b[0];
-		return c;
+		return;
 	} if (bSize == 0) {
 		c[0] = a[0];
-		return c;
+		return;
 	}
 
 	int cSize = aSize + bSize;
@@ -73,5 +73,5 @@ long long* merge(long long* a, int aSize, long long* b, int bSize, long long* c,
 		++k;
 	}
 
-	return c;
+	return;
 }
