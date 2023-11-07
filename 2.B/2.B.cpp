@@ -1,20 +1,109 @@
-﻿// 2.B.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
+#include <string>
+#include <vector>
 
-#include <iostream>
+struct Ratio {
+	int p;
+	long long x;
+};
+
+const std::vector<Ratio> ratios{ {1000000007, 257}, { 1000000777, 257 } };
+
+std::vector<int> polynomialHash(const std::string& s, std::vector<Ratio> ratios = ::ratios);
+
+void getPrefixes(const std::string& s, std::vector<std::vector<Ratio>>& resPrefixes, std::vector<Ratio> ratios = ::ratios);
+
+bool isEqual(const std::vector<std::vector<Ratio>>& prefixes, int left1, int left2, int len, std::vector<Ratio> ratios = ::ratios);
+
+int find(const std::vector<std::vector<Ratio>>& prefixes, std::vector<Ratio> ratios = ::ratios);
+
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	std::string s;
+	std::cin >> s;
+
+	if (!s.empty()) {
+		std::vector<std::vector<Ratio>> prefixes(ratios.size(), std::vector<Ratio>(s.length()));
+		getPrefixes(s, prefixes);
+
+		std::cout << find(prefixes) << '\n';
+	}
+	else {
+		std::cout << '0' << '\n';
+	}
+
+	return 0;
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+
+std::vector<int> polynomialHash(const std::string& s, std::vector<Ratio> ratios)
+{
+	std::vector<int> heshs(ratios.size());
+
+	for (int k = 0; k < ratios.size(); ++k) {
+		for (int i = 0; i < s.length(); ++i) {
+			heshs[k] = (heshs[k] * ratios[k].x + s[i]) % ratios[k].p;
+		}
+	}
+	return heshs;
+}
+
+void getPrefixes(const std::string& s, std::vector<std::vector<Ratio>>& resPrefixes, std::vector<Ratio> ratios)
+{
+	for (int k = 0; k < ratios.size(); ++k) {
+		resPrefixes[k][0].p = s[0] % ratios[k].p;
+		resPrefixes[k][0].x = 1;
+		for (int i = 1; i < s.length(); ++i) {
+			resPrefixes[k][i].p = (resPrefixes[k][i - 1].p * ratios[k].x + s[i]) % ratios[k].p;
+			resPrefixes[k][i].x = (resPrefixes[k][i - 1].x * ratios[k].x) % ratios[k].p;
+		}
+	}
+}
+
+bool isEqual(const std::vector<std::vector<Ratio>>& prefixes, int left1, int left2, int len, std::vector<Ratio> ratios)
+{
+	bool b = true;
+	for (int k = 0; k < ratios.size(); ++k) {
+		unsigned long long p1, p2;
+		if (left1 > 0) {
+			p2 = (prefixes[k][left2 + len - 1].p + prefixes[k][left1 - 1].p * prefixes[k][len].x) % ratios[k].p;
+		}
+		else {
+			p2 = (prefixes[k][left2 + len - 1].p) % ratios[k].p;
+		}
+
+		if (left2 > 0) {
+			p1 = (prefixes[k][left1 + len - 1].p + prefixes[k][left2 - 1].p * prefixes[k][len].x) % ratios[k].p;
+		}
+		else {
+			p1 = (prefixes[k][left1 + len - 1].p) % ratios[k].p;
+		}
+		if (p1 != p2)
+		{
+			b = false;
+			break;
+		}
+	}
+	return b;
+}
+
+int find(const std::vector<std::vector<Ratio>>& prefixes, std::vector<Ratio> ratios)
+{
+	int min = 0, size = prefixes[0].size(), max = prefixes[0].size() - 1;
+	int mid = ceil((float)size / 2);
+	while (min < max) {
+		if (isEqual(prefixes, 0, size - mid - 1, mid)) {
+			min = mid + 1;
+			mid = (max - min/* + 1*/) / 2 + min;
+		}
+		else {
+			max = mid - 1;
+			mid = (max - min/* + 1*/) / 2 + min;
+		}
+	}
+
+	return min = max ? min - 1 : prefixes[0].size();
+}
