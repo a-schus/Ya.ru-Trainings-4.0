@@ -109,7 +109,7 @@ bool isEqual(const std::vector<std::vector<Ratio>>& prefixes, int left1, int lef
 	int pos0 = prefixes[0].size() / 2;
 
 	for (; pos > 0; --pos) {
-		if (isEqual(prefixes, pos0 - 2 * pos, pos0 + pos, pos)) {
+		if (isEqual(prefixes, pos0 - pos * 2 , pos0, pos)) {
 			std::cout << pos0 - pos << ' ';
 		}
 		
