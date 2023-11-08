@@ -1,13 +1,14 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 struct Ratio {
 	int p;
 	long long x;
 };
 
-const std::vector<Ratio> ratios{ {1000000007, 257}, { 1000000777, 257 } };
+const std::vector<Ratio> ratios{ /*{1000000007, 257}, */{ 1000000777, 257 } };
 
 std::vector<int> polynomialHash(const std::string& s, std::vector<Ratio> ratios = ::ratios);
 
@@ -15,7 +16,7 @@ void getPrefixes(const std::string& s, std::vector<std::vector<Ratio>>& resPrefi
 
 bool isEqual(const std::vector<std::vector<Ratio>>& prefixes, int left1, int left2, int len, std::vector<Ratio> ratios = ::ratios);
 
-int find(const std::vector<std::vector<Ratio>>& prefixes, std::vector<Ratio> ratios = ::ratios);
+int find(const std::string& s, const std::vector<std::vector<Ratio>>& prefixes/*, int left, int size*/, std::vector<Ratio> ratios = ::ratios);
 
 
 
@@ -23,12 +24,14 @@ int main()
 {
 	std::string s;
 	std::cin >> s;
-
+	//std::ifstream f("C:\\Users\\a-schus\\Downloads\\Telegram Desktop\\15(3)");
+	//f >> s;
+	//f.close();
 	if (!s.empty()) {
 		std::vector<std::vector<Ratio>> prefixes(ratios.size(), std::vector<Ratio>(s.length()));
 		getPrefixes(s, prefixes);
 
-		std::cout << find(prefixes) << '\n';
+		std::cout << find(s, prefixes/*, 0, prefixes[0].size()*/) << '\n';
 	}
 	else {
 		std::cout << '0' << '\n';
@@ -90,20 +93,24 @@ bool isEqual(const std::vector<std::vector<Ratio>>& prefixes, int left1, int lef
 	return b;
 }
 
-int find(const std::vector<std::vector<Ratio>>& prefixes, std::vector<Ratio> ratios)
+int find(const std::string& s, const std::vector<std::vector<Ratio>>& prefixes/*, int left, int size*/, std::vector<Ratio> ratios)
 {
-	int min = 0, size = prefixes[0].size(), max = prefixes[0].size() - 1;
-	int mid = ceil((float)size / 2);
-	while (min < max) {
-		if (isEqual(prefixes, 0, size - mid - 1, mid)) {
-			min = mid + 1;
-			mid = (max - min/* + 1*/) / 2 + min;
-		}
-		else {
-			max = mid - 1;
-			mid = (max - min/* + 1*/) / 2 + min;
+	int size = prefixes[0].size();
+	int k = size - 2;
+	for (; k >= 0 && k >= size / 2 - 1; --k) {
+		if (isEqual(prefixes, 0, size - k - 1, k + 1)) {
+			return size - k - 1;
 		}
 	}
 
-	return min = max ? min - 1 : prefixes[0].size();
+	int n = 0;
+	for (; s.length() > 3 && n < size / 2 + 1; ++n) {
+		if (!(s.length() > 3 && s[n] == s[s.length() - (n + 1)] && s[s.length() - (n + 1)] == s[s.length() - (n + 2)])) {
+			break;
+		}
+	}
+	if (n > 0 && s[n] == s[0])
+		++n;
+	return size - n;/*(s.length() > 3 && s[0] == s[s.length() - 1] && s[s.length() - 1] == s[s.length() - 2]) ?
+		size - 1 : size;*/
 }
