@@ -35,10 +35,10 @@ int main()
 		vec[n - i - 1] = vec[n + i];
 	}
 
-	if (n % 2) {
-		std::cout << n << '\n';
-	}
-	else {
+	//if (n % 2) {
+	//	std::cout << n << '\n';
+	//}
+	//else {
 		if (!vec.empty()) {
 			std::vector<std::vector<Ratio>> prefixes(ratios.size(), std::vector<Ratio>(vec.size()));
 			getPrefixes(vec, prefixes);
@@ -46,7 +46,7 @@ int main()
 			petia(prefixes);
 		}
 
-	}
+	//}
 
 	return 0;
 }
