@@ -22,24 +22,24 @@ bool isEqual(const std::vector<std::vector<Ratio>>& prefixes1,
 bool isEqual(const std::vector<std::vector<Ratio>>& prefixes, int left1, int left2, int len, std::vector<Ratio> ratios = ::ratios);
 
 int palindrome(const std::vector<std::vector<Ratio>>& prefixes1, const std::vector<std::vector<Ratio>>& prefixes2, int pos, std::vector<Ratio> ratios = ::ratios);
-//int palindrome2(const std::vector<std::vector<Ratio>>& prefixes1, const std::vector<std::vector<Ratio>>& prefixes2, int pos, std::vector<Ratio> ratios = ::ratios);
+int palindrome2(const std::vector<std::vector<Ratio>>& prefixes1, const std::vector<std::vector<Ratio>>& prefixes2, int pos, std::vector<Ratio> ratios = ::ratios);
 
 int main()
 {
 	std::string s;
 	std::cin >> s;
-	//std::ifstream f("D:\\!!! Downloads !!!\\Telegram Desktop\\44");
+	//std::ifstream f("C:\\Users\\a-schus\\Downloads\\Telegram Desktop\\44");
 	//f >> s;
 	//f.close();
 	std::string s2 = s;
 	std::reverse(s2.begin(), s2.end());
-	
+
 	if (!s.empty()) {
 		std::vector<std::vector<Ratio>> prefixes1(ratios.size(), std::vector<Ratio>(s.length()));
 		getPrefixes(s, prefixes1);
 		std::vector<std::vector<Ratio>> prefixes2(ratios.size(), std::vector<Ratio>(s.length()));
 		getPrefixes(s2, prefixes2);
-
+		std::cout << "!!!!!\n";
 		int count = 0;
 		for (int i = 0; i < s.size(); ++i) {
 			count += palindrome(prefixes1, prefixes2, i);
@@ -142,24 +142,24 @@ int palindrome(const std::vector<std::vector<Ratio>>& prefixes1,
 	return count;
 }
 
-//int palindrome2(const std::vector<std::vector<Ratio>>& prefixes1,
-//	const std::vector<std::vector<Ratio>>& prefixes2,
-//	int pos, std::vector<Ratio> ratios)
-//{
-//	int size = prefixes1[0].size();
-//	int count = 1;
-//	for (int i = 1; pos + i < size && pos - i >= 0; ++i) {
-//		if (isEqual(prefixes1, prefixes2, pos - i, size - pos - i - 1, i * 2 + 1)) {
-//			++count;
-//		}
-//	}
-//
-//	int pos2 = pos + 1;
-//	for (int i = 0; pos2 + i < size && pos - i >= 0; ++i) {
-//		if (isEqual(prefixes1, prefixes2, pos - i, size - pos - i - 2, i * 2 + 2)) {
-//			++count;
-//		}
-//	}
-//
-//	return count;
-//}
+int palindrome2(const std::vector<std::vector<Ratio>>& prefixes1,
+	const std::vector<std::vector<Ratio>>& prefixes2,
+	int pos, std::vector<Ratio> ratios)
+{
+	int size = prefixes1[0].size();
+	int count = 1;
+	for (int i = 1; pos + i < size && pos - i >= 0; ++i) {
+		if (isEqual(prefixes1, prefixes2, pos - i, size - pos - i - 1, i * 2 + 1)) {
+			++count;
+		}
+	}
+
+	int pos2 = pos + 1;
+	for (int i = 0; pos2 + i < size && pos - i >= 0; ++i) {
+		if (isEqual(prefixes1, prefixes2, pos - i, size - pos - i - 2, i * 2 + 2)) {
+			++count;
+		}
+	}
+
+	return count;
+}
